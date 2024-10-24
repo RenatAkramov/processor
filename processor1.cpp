@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <assert.h>
+#include <TXLib.h>
 
 #include "processor1.h"
 
@@ -8,9 +10,12 @@ void run(SPV* spu);
 
 int main()
 {
+    printf("c\n");
     SPV spu = {};
-    printf("huiiiii\n");
     run(&spu);
+    printf("main\n");
+
+    return 0;
 }
 
 void run(SPV* spu)
@@ -18,7 +23,7 @@ void run(SPV* spu)
     FILE* file_two = fopen("file_two.txt", "r");
    
     fseek(file_two, 0, SEEK_END);
-    spu->size_code= ftell(file_two);
+    spu->size_code = ftell(file_two);
     rewind(file_two);
 
     spu->registers = (int*) calloc(spu->amount_registers, sizeof(int));
@@ -32,38 +37,28 @@ void run(SPV* spu)
     stackCtor(&spu->stk, &spu->hash);
     spu->ip = 0;
     int a = 1;
-    while(a)
+    int b = 0;
+    while(a != 0)
     {
+        printf("abu dabi\n");
         switch(spu->code[spu->ip])
         {
-            case -1:
+            case -1: //hlt
             {
-                printf("huii");
-                exit(EXIT_SUCCESS);
+                a = 0;
+                printf("hlt\n");
+                free(spu->registers);
+                free(spu->code);
+                fclose(file_two);
+                stackDestroy(&spu->stk, &spu->hash);
+                printf("ok\n");
+                return;
+                break;
             }
             case 1:// push
             {
-                int arg = GetArg(spu);
-                printf("%d\n",arg);
-                if (arg & 1)
-                {
-                    printf("%d\n", (spu->code)[spu->ip]);
-                    stackPush(&spu->stk, (StackElem_t) (spu->code)[spu->ip], &spu->hash);
-                    spu->ip++;
-                    printf("%d\n", spu->ip);
-                    break;
-                }
-                else if (arg & 2)
-                {
-                    int num_reg = spu->code[spu->ip];
-                    stackPush(&spu->stk, spu->registers[num_reg], &spu->hash);
-                    spu->ip ++;   
-                    break;
-                }
-                /*if (arg & 3)
-                {
-                    int addr_RAM
-                }*/
+                push_start(spu);
+                break;
             }
             case 2: // сложение двух цифр add
             {
@@ -115,7 +110,8 @@ void run(SPV* spu)
             case 8: // вывод всего стэка dump
             {
                 processorDump(spu);
-                spu->ip += 1;
+                spu->ip += 1;                                 // cpu
+                printf("%d\n", (spu->code)[spu->ip]);
                 break;
             }
             case 9: // вывод последнего элемеента стэка out
@@ -128,7 +124,6 @@ void run(SPV* spu)
             }
             case 10: // косинус cos
             {
-                printf("ittttttttt");
                 StackElem_t a1 = stackPop(&spu->stk,&spu->hash);
                 stackPush(&spu->stk, cos(a1), &spu->hash);   
                 spu->ip += 1;
@@ -217,14 +212,21 @@ void run(SPV* spu)
                 int num_reg = spu->code[spu->ip + 1];
                 stackPush(&spu->stk, spu->registers[num_reg], &spu->hash);
                 spu->ip +=2;
+                break;
             }
             case 19: // pop ax
             {
-                StackElem_t el_1 = stackPop(&spu->stk, &spu->hash);
-                (spu->registers)[spu->code[spu->ip + 1] = el_1];
+                pop_start(spu);
+                break;
             }
+            /*default:
+            {
+
+                assert(0);
+            }*/
 
         }
+        printf("end_switch\n");
 
     }
 }
@@ -252,8 +254,45 @@ void processorDump(SPV* spu)
 int GetArg(SPV* spu)
 {
     spu->ip++;
-    int result = NULL_ELEMENT_DATA;
     int argType = (spu->code)[spu->ip];
     spu->ip++;
     return argType;
+}
+
+void push_start(SPV* spu)
+{
+    int arg = GetArg(spu);
+    printf("%d\n",arg);
+    if (arg & stack_code)
+    {
+        printf("%d\n", (spu->code)[spu->ip]);
+        stackPush(&spu->stk, (StackElem_t) (spu->code)[spu->ip], &spu->hash);
+        spu->ip++;
+        printf("%d\n", spu->ip);
+    }
+    else if (arg & register_code)
+    {
+        int num_reg = spu->code[spu->ip];
+        stackPush(&spu->stk, spu->registers[num_reg], &spu->hash);
+        spu->ip ++;   
+    }
+                /*if (arg & 3)
+                {
+                    int addr_RAM
+                }*/    
+}
+
+void pop_start(SPV* spu)
+{
+    int arg = GetArg(spu);
+    if (arg & stack_code)
+    {
+        stackPop(&spu->stk,&spu->hash);
+        spu->ip++;
+    }
+    else if (arg & register_code)
+    {
+        spu->registers[spu->code[spu->ip]] = stackPop(&spu->stk,&spu->hash);
+        spu->ip++;        
+    }
 }

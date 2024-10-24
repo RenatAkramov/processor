@@ -82,16 +82,16 @@ struct Hash_struct
 
 struct SPV
 {
-    int* code            = {};
-    int* registers       = {};
-    int ip;
-    int size_code;
-    Stack_t stk          = {};
+    int*        code            = {};
+    int*        registers       = {};
+    int         ip = 0;
+    int         size_code = 0;
+    Stack_t     stk          = {};
     Hash_struct hash     = {};
-    int amount_registers = 4;
-    int RAM              = {};
-    int labels[4]        =  {-1};
+    int         amount_registers = 4;
+    int         RAM              = {};
 };
+
 
 int  stackPop(Stack_t* stk, Hash_struct* hash);
 
@@ -116,3 +116,7 @@ unsigned long long hash_func_struct(Stack_t* stk);
 void processorDump(SPV* spu);
 
 int GetArg(SPV* spu);
+
+void push_start(SPV* spu);
+
+void pop_start(SPV* spu);
