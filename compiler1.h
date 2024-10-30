@@ -23,10 +23,12 @@ enum num_commands
     JNE    =  17,
     PUSHR  =  18,
     POP    =  19,
-    AX_num =  1,
-    BX_num =  2,
-    CX_num =  3,
-    DX_num =  4
+    IN_    =  20,
+    ROOT   =  21,
+    AX_num =  0,
+    BX_num =  1,
+    CX_num =  2,
+    DX_num =  3
      
 };
 
@@ -42,7 +44,7 @@ enum OTHERS
 struct LABELS
 {
     int addr;
-    char label[10];
+    char* label;
 };
 
 struct COMPILERS
@@ -52,6 +54,7 @@ struct COMPILERS
     FILE* file_two;
     char* data1;
     int amount_comands;
+    int amount_labels = 0;
 
 };
 
@@ -65,3 +68,7 @@ void push_analysis_compiler(COMPILERS* compiler_struct);
 void pop_analysis_compiler(COMPILERS* compiler_struct);
 
 int label_analysis_compiler(COMPILERS* compiler_struct);
+
+int jump_analysis(COMPILERS* compiler_struct);
+
+int check_func(const char* txt_command , COMPILERS* compiler_struct);

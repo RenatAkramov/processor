@@ -46,10 +46,12 @@ enum num_commands
     JNE    =  17,
     PUSHR  =  18,
     POP    =  19,
-    AX_num =  1,
-    BX_num =  2,
-    CX_num =  3,
-    DX_num =  4
+    IN_    =  20,
+    ROOT   =  21,
+    AX_num =  0,
+    BX_num =  1,
+    CX_num =  2,
+    DX_num =  3
      
 };
 
@@ -59,7 +61,9 @@ enum OTHERS
     NULL_ELEMENT_DATA = 0xBEDA,
     LABEL             = 0xDEAD,
     stack_code        = 1,
-    register_code     = 2   
+    register_code     = 2,   
+    amount_registers  = 4
+
 };
 
 struct Stack_t
@@ -82,14 +86,13 @@ struct Hash_struct
 
 struct SPV
 {
-    int*        code            = {};
-    int*        registers       = {};
-    int         ip = 0;
-    int         size_code = 0;
-    Stack_t     stk          = {};
-    Hash_struct hash     = {};
-    int         amount_registers = 4;
-    int         RAM              = {};
+    int*        code                        = {};
+    StackElem_t registers[amount_registers] = {0};
+    int         ip                          = 0;
+    int         size_code                   = 0;
+    Stack_t     stk                         = {};
+    Hash_struct hash                        = {};
+    int         RAM                         = {};
 };
 
 
@@ -120,3 +123,5 @@ int GetArg(SPV* spu);
 void push_start(SPV* spu);
 
 void pop_start(SPV* spu);
+
+void run(SPV* spu);

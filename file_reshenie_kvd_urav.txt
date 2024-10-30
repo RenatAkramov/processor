@@ -1,0 +1,48 @@
+in
+in
+in
+pop CX
+pop BX
+pop AX
+dump
+push BX
+push BX
+pop DX // лежит b
+sqrt
+pop BX // лежит квадрат b
+push -4
+push AX
+push CX
+dump
+mul
+mul
+dump
+push BX 
+add
+root
+pop BX // корень из дискриминанта
+push BX
+dump
+push DX
+push -1
+mul
+pop DX // лежит -b
+push DX
+dump
+add
+push 2
+div
+pop AX // лежит плюс корень
+dump
+push DX
+push BX
+sub
+push 2
+div
+pop CX // лежит минус корень
+push CX
+out
+push AX
+out
+
+hlt
