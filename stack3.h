@@ -27,7 +27,7 @@ enum canary
     right_struct_canary_values       = 0xDEAD
 };
 
-enum OTHERS
+enum OTHERS_
 {
     START_SIZE                = 10,
     NULL_ELEMENT_DATA         = 0xBEDA   

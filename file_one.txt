@@ -1,0 +1,20 @@
+push 0
+in
+:mamark
+pop BX
+push 1
+add
+pop AX
+push AX
+push AX
+sqrt
+out
+pop 1
+push BX
+ja :mamark
+call :DUMP
+hlt
+:DUMP
+dump
+dump
+ret

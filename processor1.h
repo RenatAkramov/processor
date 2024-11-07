@@ -1,64 +1,40 @@
+struct SPV;
 typedef double StackElem_t; 
+typedef void(*func_def) (SPV*);
 #define DEBUG
 
-enum ERRORS
-{
-    OKEY                      = 0,
-    ERROR_CTOR                = 1,
-    ERROR_PUSH                = 2,
-    ERROR_POP                 = 3,
-    ERROR_DESTROY             = 4,
-    ERROR_left_struct_canary  = 5,
-    ERROR_right_struct_canary = 6,
-    ERROR_left_stk_canary     = 7,
-    ERROR_right_stk_canary    = 8,
-    ERROR_hash_array          = 9,
-    ERROR_hash_struct         = 10
-};
 
-enum canary
-{
-    left_stk_canary_values           = 0xDEAD,
-    right_stk_canary_values          = 0xDEAD,
-    left_struct_canary_values        = 0xDEAD,
-    right_struct_canary_values       = 0xDEAD
-};
+struct Stack_t;
+
+struct Hash_struct;
 
 enum num_commands
 {
-    HLT    = -1,
-    PUSH   =  1,
-    ADD    =  2,
-    SUB    =  3,
-    MUL    =  4,
-    DIV    =  5,
-    SQRT   =  6,
-    SIN    =  7,
-    DUMP   =  8,
-    OUT_   =  9,
-    COS    =  10,
-    JMP    =  11,
-    JA     =  12,
-    JAE    =  13,
-    JB     =  14,
-    JBE    =  15,
-    JE     =  16,
-    JNE    =  17,
-    PUSHR  =  18,
-    POP    =  19,
-    IN_    =  20,
-    ROOT   =  21,
+    HLT    =  0x00,
+    PUSH   =  0x01,
+    ADD    =  0x02,
+    SUB    =  0x03,
+    MUL    =  0x04,
+    DIV    =  0x05,
+    SQRT   =  0x06,
+    DUMP   =  0x07,
+    OUT_   =  0x08,
+    JMP    =  0x09,
+    JA     =  0x0A,
+    JB     =  0x0B,
+    POP    =  0x0C,
+    IN_    =  0x0D,
+    ROOT   =  0x0E,
+    CALL   =  0x0F,
+    RET    =  0x10,
     AX_num =  0,
     BX_num =  1,
     CX_num =  2,
     DX_num =  3
-     
-};
+};    
 
 enum OTHERS
 {
-    START_SIZE        = 10,
-    NULL_ELEMENT_DATA = 0xBEDA,
     LABEL             = 0xDEAD,
     stack_code        = 1,
     register_code     = 2,   
@@ -66,62 +42,29 @@ enum OTHERS
 
 };
 
-struct Stack_t
+struct proc_com
 {
-    StackElem_t  left_struct_canary  = left_struct_canary_values;
-    StackElem_t* data                {};
-    int          size                = 0;
-    int          capacity            = 0;
-    int          error_code[10]      = {0};
-    int          error_code_nume     = 0;
-    int          amount_error        = 0;
-    StackElem_t  right_struct_canary = right_struct_canary_values;
+    int num_code;
+    func_def func;
+
 };
 
-struct Hash_struct
-{
-    unsigned long long hash_array  = 0;
-    unsigned long long hash_struct = 0;
-};
 
 struct SPV
 {
+
     int*        code                        = {};
     StackElem_t registers[amount_registers] = {0};
     int         ip                          = 0;
     int         size_code                   = 0;
     Stack_t     stk                         = {};
     Hash_struct hash                        = {};
-    int         RAM                         = {};
+    Stack_t     addrs_ret                   = {};
+    Hash_struct hash_ret                    = {};
+    struct proc_com array_comands[17]; 
+    int         RAM[24]                     = {};
+    int amount_comands;
 };
 
 
-int  stackPop(Stack_t* stk, Hash_struct* hash);
 
-int  stackPush(Stack_t* stk, StackElem_t new_element, Hash_struct* hash);
-
-int  stackCtor(Stack_t* stk, Hash_struct* hash); // static
-
-void stackDump(Stack_t* stk, Hash_struct* hash);
-
-int  stackDestroy(Stack_t* stk, Hash_struct* hash);
-
-int  stackOkey(Stack_t* stk, Hash_struct* hash);
-
-void stackCheck(Stack_t* stk, Hash_struct* hash);
-
-int compare(StackElem_t a, StackElem_t b);
-
-unsigned long long hash_func_array(Stack_t* stk);
-
-unsigned long long hash_func_struct(Stack_t* stk);
-
-void processorDump(SPV* spu);
-
-int GetArg(SPV* spu);
-
-void push_start(SPV* spu);
-
-void pop_start(SPV* spu);
-
-void run(SPV* spu);
