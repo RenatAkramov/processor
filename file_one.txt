@@ -13,8 +13,8 @@ pop 1
 push BX
 ja :mamark
 call :DUMP
+dump
 hlt
 :DUMP
-dump
 dump
 ret

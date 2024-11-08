@@ -31,6 +31,10 @@ enum num_commands
     ROOT   =  0x0E,
     CALL   =  0x0F,
     RET    =  0x10,
+    JAE    =  0x11,
+    JBE    =  0x12,
+    JE     =  0x13,
+    JNE    =  0x14,
     AX_num =  0,
     BX_num =  1,
     CX_num =  2,
@@ -64,7 +68,7 @@ struct COMANDS
 struct COMPILERS
 {
     struct LABELS array_labels[10];
-    struct COMANDS array_comands[17];
+    struct COMANDS array_comands[30];
     FILE* file_one;
     FILE* file_two;
     char* data1;

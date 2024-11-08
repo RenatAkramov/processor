@@ -153,6 +153,7 @@ int stackPush(Stack_t* stk, StackElem_t new_element, Hash_struct* hash)
         #endif
         return OKEY;
     }
+    return OKEY;
 }
 
 int stackPop(Stack_t* stk, Hash_struct* hash)
@@ -205,9 +206,7 @@ int stackDestroy(Stack_t* stk, Hash_struct* hash)
     #ifdef DEBUG
     stackCheck(stk, hash);
     #endif
-    StackElem_t* ptr = stk->data;
     free(stk->data);
-    printf("[[%lg]]\n", *ptr);
 
     stk->size = 0xBEDA;
 
@@ -217,6 +216,7 @@ int stackDestroy(Stack_t* stk, Hash_struct* hash)
     {
         stk->error_code[stk->error_code_nume] = ERROR_DESTROY;
         stk->error_code_nume++;
+        return ERROR;
     }
     else
     {
@@ -229,6 +229,7 @@ void stackDump(Stack_t* stk, Hash_struct* hash)
     #ifdef DEBUG
     stackCheck(stk, hash);
     #endif
+    printf("\n");
     printf("Element in data: ");
 
     for (int i = 0; i < stk->size; i++)

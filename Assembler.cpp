@@ -58,6 +58,15 @@ static void do_call(COMPILERS* compiler_struct);
 
 static void do_ret(COMPILERS* comppiler_struct);
 
+static void do_jne(COMPILERS* comppiler_struct);
+
+static void do_je(COMPILERS* comppiler_struct);
+
+static void do_jae(COMPILERS* comppiler_struct);
+
+static void do_jbe(COMPILERS* comppiler_struct);
+
+
 int main()
 {
     COMPILERS compiler_struct = {}; 
@@ -278,6 +287,14 @@ void commands_start(COMPILERS* compiler_struct)
 
     do_commands("ret", compiler_struct, RET, do_ret, lab_others);
 
+    do_commands("jae", compiler_struct, JAE, do_jae, lab_jmp);
+
+    do_commands("jbe", compiler_struct, JBE, do_jbe, lab_jmp);
+
+    do_commands("je",  compiler_struct, JE,  do_je , lab_jmp);
+
+    do_commands("jne", compiler_struct, JNE, do_jne, lab_jmp);
+
     
 }
 
@@ -339,6 +356,26 @@ static void do_in(COMPILERS* compiler_struct)
 static void do_jmp(COMPILERS* compiler_struct)
 {
     fprintf(compiler_struct->file_two,"%d %d\n", JMP, jump_analysis(compiler_struct));
+}
+
+static void do_jne(COMPILERS* compiler_struct)
+{
+    fprintf(compiler_struct->file_two, "%d %d\n", JNE, jump_analysis(compiler_struct));
+}
+
+static void do_je(COMPILERS* compiler_struct)
+{
+    fprintf(compiler_struct->file_two, "%d %d\n", JE, jump_analysis(compiler_struct));
+}
+
+static void do_jbe(COMPILERS* compiler_struct)
+{
+    fprintf(compiler_struct->file_two, "%d %d\n", JBE, jump_analysis(compiler_struct));
+}
+
+static void do_jae(COMPILERS* compiler_struct)
+{
+    fprintf(compiler_struct->file_two, "%d %d\n", JAE, jump_analysis(compiler_struct));
 }
 
 static void do_ja(COMPILERS* compiler_struct)

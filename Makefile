@@ -18,6 +18,6 @@ stack3.o: ./stack/stack3.cpp
 	g++ -I ./include/ -c $(flags) ./stack/stack3.cpp
 
 clean:
-	rm -rf *.o *.exe 
+	rm -rf *.o *.exe *.exe.log *.exe.log.dmp
 
 
